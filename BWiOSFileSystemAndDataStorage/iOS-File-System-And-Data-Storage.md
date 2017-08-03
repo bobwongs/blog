@@ -1,6 +1,8 @@
 # iOS File System And Data Storage
 iOS中的文件系统和数据存储
 
+Github Demo：https://github.com/bobwongs/blog.git
+
 ## Contents
 
 - 文件系统
@@ -14,6 +16,7 @@ iOS中的文件系统和数据存储
   - 埋点
 - 开发经验
 - Reference
+- Next
 
 ## 文件系统
 
@@ -333,3 +336,9 @@ Archive和Unarchive复杂的对象
 Sandbox：
 
 https://developer.apple.com/library/content/documentation/Security/Conceptual/AppSandboxDesignGuide/AboutAppSandbox/AboutAppSandbox.html#//apple_ref/doc/uid/TP40011183-CH1-SW1
+
+## Next
+
+Interface Builder中如何更好地去引用子Bundle中的资源
+
+其他数据存储方式的研究，如Realm、Core Data，以及对各种存储方式的分析
