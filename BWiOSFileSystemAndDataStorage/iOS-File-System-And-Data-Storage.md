@@ -14,7 +14,6 @@ iOS中的文件系统和数据存储
   - 埋点
 - 开发经验
 - Reference
-- Follow Me
 
 ## 文件系统
 
@@ -225,20 +224,112 @@ NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 
 ### Archive和Unarchive
 
+实例对象和特定编码形式的数据之间的相互转换，可以把这编码后的数据写入文件，然后把文件存储起来，供下次需要时进行使用
 
+**Archive和Unarchive在类中的实现**
+
+```objective-c
+// 遵循协议 - NSCoding
+- (void)encodeWithCoder:(NSCoder *)aCoder；
+- (instancetype)initWithCoder:(NSCoder *)aDecoder；
+
+// 实现协议方法
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:object forKey:key];
+    [aCoder encodeBasicDataType:xxx forKey:key];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [self init]) {
+        _object = [aDecoder decodeObjectForKey:key];
+        _number = [aDecoder decodeIntegerForKey:key];
+    }
+    return self;
+}
+
+// 说明：Encode的对象为Property List对象类型；
+```
+
+**Archive和Unarchive的实用操作**
+
+```objective-c
+// Archive
+[NSKeyedArchiver archiveRootObject:modelObject toFile:pathArchivedFile];
+
+// Unarchive
+ModelObject * modelObject = [NSKeyedUnarchiver unarchiveObjectWithFile:pathArchivedFile];
+
+// 对象和Data类型互转（获得对象Archive的Data和通过Data获取对象）
+NSData *data = [NSKeyedArchiver archivedDataWithRootObject:object];
+NSObject *object = [NSKeyedUnarchiver unarchiveObjectWithData:object];
+```
+
+**Archive和Unarchive开发经验**
+
+NSUserDefaults存取Archive之后的Data对象，开发中，如果想便捷的存储一个对象，而又不想对对象进行拆分存储，可以使用这种方法进行对象的存储
+
+Archive存储的集合类型里的对象不能为nil，如果nil会报错，因为nil不是对象类型，解决方法，使用NSMutableDictionary把空字符串替换为@""
+
+存取方法的封装
+
+存取路径名的统一
+
+Archive和Unarchive复杂的对象
 
 ### SQLite
 
+轻量级数据库
 
+框架：libsqlite3.tbd
+
+使用SQL语句对数据库进行操作，需要熟练使用SQL
+
+常用的第三方框架：FMDB
+
+适用场景：大量的数据，而且需要频繁地对数据要有修改操作的
 
 ## 项目运用
 
+### 埋点
+
+**需求：**用户行为的数据统计和分析
+
+**流程设计：**埋点 -> 记录数据 -> App在后台/App will be killed/其他时机 -> 发送统计数据 -> 发送成功，删除本地已发送的数据 -> 重复流程
+
+**实现方案：**
+
+> 统计数据的存储方案：数据库-表
+
+> 表字段的设计
+>
+> ​	业务无关的参数
+>
+> ​		ActionCode事件编码
+>
+> ​		ActionType事件类型（可选，如点击或者其他）
+>
+> ​		TimeStamp事件时间
+>
+> ​		GPS位置信息
+>
+> ​		IP地址
+>
+> ​		Account用户账户
+>
+> ​		SendType发送状态
+>
+> ​	业务相关的参数
+>
+> ​		BusinessParams业务参数（使用JSON字符串存储业务参数，不给数据表增加多余的字段，免得让表结构变得难以维护）
+
+> 实现技术：**文件系统**对数据库文件进行创建和管理，使用FMDB对数据库进行增删改查的操作
+
 ## 开发经验
+
+规范和灵活使用文件系统和数据存储去实现项目开发中的需求功能，让项目代码更加健壮
 
 ## Reference
 
 Sandbox：
 
 https://developer.apple.com/library/content/documentation/Security/Conceptual/AppSandboxDesignGuide/AboutAppSandbox/AboutAppSandbox.html#//apple_ref/doc/uid/TP40011183-CH1-SW1
-
-## Follow Me
