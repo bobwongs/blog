@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  BWHomeViewController.h
 //  BWiOSFileSystemAndDataStorage
 //
 //  Created by BobWong on 2017/8/3.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface BWHomeTableViewController : UITableViewController
 
 @end
-
